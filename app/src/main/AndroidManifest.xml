@@ -4,6 +4,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
 
     <application
         android:allowBackup="true"
@@ -13,20 +14,35 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity"
-            android:theme="@style/MainActivityTheme"/>
+            android:theme="@style/MainActivityTheme"
+            android:screenOrientation="landscape"/>
 
-        <activity android:name=".sharePlay" />
-        <activity android:name=".LogoEdit" />
+        <activity android:name=".sharePlay"/>
+        <activity android:name=".LogoEdit"
+            android:theme="@style/DialogueTheme"
+            android:screenOrientation="landscape"/>
         <activity android:name=".edit_layout"
-            android:theme="@style/DialogueTheme"/>
+            android:theme="@style/DialogueTheme"
+            android:screenOrientation="landscape"/>
         <activity android:name=".SplashScreen"
-            android:theme="@style/MainActivityTheme">
+            android:theme="@style/MainActivityTheme"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+
             </intent-filter>
         </activity>
+            <service
+                android:enabled="true"
+                android:name=".MainActivity"
+                xmlns:tools="http://schemas.android.com/tools"
+                tools:targetApi="q"
+                android:foregroundServiceType="mediaProjection"
+                android:exported="false"
+        />
+
     </application>
 
 </manifest>

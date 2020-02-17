@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import java.io.ByteArrayOutputStream
 
@@ -19,7 +20,7 @@ class LogoEdit : AppCompatActivity() {
     private  lateinit var logoImg1: ImageView
     private lateinit var  logoImg2: ImageView
     private  lateinit var  previewImg : ImageView
-    private lateinit var  okBtn     : Button
+    private lateinit var  okBtn     : ImageButton
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_logo_edit)
@@ -31,7 +32,7 @@ class LogoEdit : AppCompatActivity() {
 
         var logoIntent : Intent = getIntent()
 
-        var byteArray :ByteArray =   logoIntent.getByteArrayExtra(MainActivity.LOGO_IMAGE_PREF)
+        var byteArray :ByteArray =   logoIntent.getByteArrayExtra("LOGO_IMAGE_PREF")
         var bitmap: Bitmap = BitmapFactory.decodeByteArray(byteArray,0,byteArray.size)
         previewImg.setImageBitmap(bitmap)
 

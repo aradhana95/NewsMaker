@@ -9,10 +9,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Window
 import android.view.WindowManager
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import de.hdodenhof.circleimageview.CircleImageView
 
 private val tag = edit_layout::class.java.simpleName
@@ -23,7 +20,7 @@ private  lateinit var txt_col: TextView
 private  lateinit var  edit_txt: TextView
 
 
-private lateinit var ok: Button
+private lateinit var ok: ImageButton
 private lateinit var red_: CircleImageView
 private lateinit var black_: CircleImageView
 private lateinit var white_: CircleImageView

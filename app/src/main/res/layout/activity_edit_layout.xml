@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     tools:context=".edit_layout"
     android:background="#00000000">
@@ -277,15 +277,14 @@
 
 
 
-    <Button
+    <ImageButton
         android:id="@+id/btn_ok"
         android:padding="2dp"
+        android:src="@drawable/ic_ok"
         android:layout_width="40dp"
-        android:layout_height="30dp"
+        android:layout_height="40dp"
         android:background="#DEF9FD"
-        android:textStyle="bold"
-        android:layout_marginTop="20dp"
-        android:text="OK"
+        android:layout_marginBottom="10dp"
         android:layout_gravity="center"
         />
 

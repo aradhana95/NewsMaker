@@ -22,8 +22,7 @@
             android:theme="@style/DialogueTheme"
             android:screenOrientation="landscape"/>
         <activity android:name=".edit_layout"
-            android:theme="@style/DialogueTheme"
-            android:screenOrientation="landscape"/>
+            android:theme="@style/DialogueTheme"></activity>
         <activity android:name=".SplashScreen"
             android:theme="@style/MainActivityTheme"
             >

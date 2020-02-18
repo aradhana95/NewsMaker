@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
@@ -20,20 +21,24 @@ import android.media.projection.MediaProjection
 import android.media.projection.MediaProjectionManager
 import android.net.Uri
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings
 import android.util.*
 import android.view.*
 import android.view.animation.AnimationUtils
-import android.widget.*
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
+import org.jetbrains.anko.doAsync
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
@@ -236,7 +241,7 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
         // if(logoImage.drawable==null)
         // logoImage.setImageResource(R.drawable.news_logo2)
 
-        logoImage.layout(0, 0, 50, 50);
+      /*  logoImage.layout(0, 0, 50, 50);
         logoImage.buildDrawingCache()
         var bitmapPref: Bitmap = Bitmap.createBitmap(logoImage.getDrawingCache())
         var prefByte: ByteArrayOutputStream = ByteArrayOutputStream()
@@ -265,7 +270,7 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
                 BitmapFactory.decodeByteArray(decodeByteImg, 0, decodeByteImg.size)
             logoImage.setImageBitmap(decodeImgArray)
 
-        }
+        }*/
 
 
         /*scrn_recrd_btn.setOnClickListener { v ->
@@ -454,12 +459,12 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
             override fun onClick(v: View?) {
                 var logorequest: Intent = Intent(applicationContext, LogoEdit::class.java)
 
-                /* logoImage.buildDrawingCache()
+                logoImage.buildDrawingCache()
                  var logoBitmap: Bitmap = logoImage.getDrawingCache()
                  var  byteArrayStream : ByteArrayOutputStream =  ByteArrayOutputStream()
                  logoBitmap.compress(Bitmap.CompressFormat.PNG,100,byteArrayStream)
-                 var byteArray :ByteArray = byteArrayStream.toByteArray()*/
-                logorequest.putExtra("LOGO_IMAGE_PREF", byteArrayPref)
+                 var byteArray :ByteArray = byteArrayStream.toByteArray()
+                logorequest.putExtra("LOGO_IMAGE_PREF", byteArray)
                 startActivityForResult(logorequest, LOGO_IMAGE)
 
             }
@@ -815,30 +820,48 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
     }
 
     //start camera
-    private fun startCamera() {
-        // Create configuration object for the viewfinder use case
-        val previewConfig =
-            PreviewConfig.Builder().apply {
-                setTargetAspectRatio(Rational(1, 1))
-                setTargetResolution(Size(340, 340))
-            }
-                .build()//windowManager.defaultDisplay.rotation
-        // Build the viewfinder use case
-        val preview = Preview(previewConfig)
+     fun startCamera() {
 
-        // Create a configuration object for the video use case
-        val videoCaptureConfig = VideoCaptureConfig.Builder().apply {
-            setTargetRotation(viewFinder.display.rotation)
-        }.build()
-        videoCapture = VideoCapture(videoCaptureConfig)
+             doAsync {
 
-        preview.setOnPreviewOutputUpdateListener {
-            viewFinder.surfaceTexture = it.surfaceTexture
-            updateTransform()
-        }
+                 CameraX.unbindAll()
+                 val aspectRatio =
+                     Rational(viewFinder.getWidth(), viewFinder.getHeight())
+                 val screen =
+                     Size(viewFinder.getWidth(), viewFinder.getHeight())
 
-        // Bind use cases to lifecycle
-        CameraX.bindToLifecycle(this, preview, videoCapture)
+                 val pConfig = PreviewConfig.Builder()
+                     .setTargetAspectRatio(aspectRatio)
+                     .setTargetResolution(screen) //.setLensFacing(CameraX.LensFacing.FRONT)
+                     .build()
+
+                 // Build the viewfinder use case
+                 val preview = Preview(pConfig)
+
+                 Log.d(tag, "preview $preview")
+
+                 preview.setOnPreviewOutputUpdateListener {
+                     viewFinder.surfaceTexture = it.surfaceTexture
+                     updateTransform()
+                 }
+
+                 // Create a configuration object for the video use case
+                 val videoCaptureConfig = VideoCaptureConfig.Builder().apply {
+                     setTargetRotation(viewFinder.display.rotation)
+                 }.build()
+                 videoCapture = VideoCapture(videoCaptureConfig)
+
+
+                 // Bind use cases to lifecycle
+                 CameraX.bindToLifecycle(this@MainActivity, preview, videoCapture)
+                 Log.d(tag,"asynctask")
+
+             }
+
+
+
+
+
     }
 
     private fun updateTransform() {
@@ -846,8 +869,8 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
         val matrix = Matrix()
 
         // Compute the center of the view finder
-        val centerX = viewFinder.width / 2f
-        val centerY = viewFinder.height / 2f
+        val centerX = viewFinder.measuredWidth/ 2f
+        val centerY = viewFinder.measuredHeight / 2f
 
         // Correct preview output to account for display rotation
         val rotationDegrees = when (viewFinder.display.rotation) {
@@ -966,6 +989,18 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
 
         return super.dispatchKeyEvent(keyevent)
     }
+
+    override public  fun onConfigurationChanged(newConfig:Configuration){
+        super.onConfigurationChanged(newConfig)
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            Toast.makeText(this, "landscape", Toast.LENGTH_SHORT).show();
+            viewFinder .setRotation(90.toFloat());
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+            Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
+            viewFinder.setRotation(0.toFloat());
+        }
+    }
+
 
 
     /* override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {

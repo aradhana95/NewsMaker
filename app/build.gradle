@@ -21,6 +21,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 dependencies {
@@ -44,9 +52,13 @@ dependencies {
 
 
 
-    def camerax_version = "1.0.0-alpha01"
+    def camerax_version = "1.0.0-alpha10"
     implementation "androidx.camera:camera-core:${camerax_version}"
     implementation "androidx.camera:camera-camera2:${camerax_version}"
+    implementation "androidx.camera:camera-view:1.0.0-alpha07"
+    implementation "androidx.camera:camera-extensions:1.0.0-alpha07"
+    implementation "androidx.camera:camera-lifecycle:${camerax_version}"
+
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.1'

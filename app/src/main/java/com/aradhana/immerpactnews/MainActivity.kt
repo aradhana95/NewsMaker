@@ -33,6 +33,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
+import androidx.camera.view.CameraView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
@@ -127,7 +128,7 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
     }
 
 
-    private lateinit var viewFinder: TextureView
+    private lateinit var viewFinder: CameraView
     private lateinit var captureButton: ImageButton
     private lateinit var videoCapture: VideoCapture
     private lateinit var marque: TextView
@@ -185,6 +186,22 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
         sharedPreferences = applicationContext.getSharedPreferences(MYPREF, Context.MODE_PRIVATE)
         sharedPrefrenceEdit = sharedPreferences.edit()
         sharedPrefrenceEdit.apply()
+
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.CAMERA
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return
+        }
+        viewFinder.bindToLifecycle(this)
 
         heading.setText(sharedPreferences.getString(HEADNAME_PREF, ""))
         heading.setBackgroundColor(
@@ -319,13 +336,13 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
 
 
         // Request camera permissions
-        if (allPermissionsGranted()) {
+       /* if (allPermissionsGranted()) {
             viewFinder.post { startCamera() }
         } else {
             ActivityCompat.requestPermissions(
                 this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
             )
-        }
+        }*/
 
         val file = File(
             externalMediaDirs.first(),
@@ -334,7 +351,7 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
         Log.d(tag, "Video location: $file")
 
 
-        captureButton.setOnTouchListener { _, event ->
+      /*  captureButton.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
                 captureButton.setBackgroundColor(Color.GREEN)
                 videoCapture.startRecording(file, object : VideoCapture.OnVideoSavedListener {
@@ -358,7 +375,7 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
             }
             false
         }
-
+*/
         /*logoImage.setTag(R.drawable.news_logo1)
 
 
@@ -536,7 +553,7 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
 
             }
         }
-        if (requestCode == REQUEST_CODE_PERMISSIONS) {
+       /* if (requestCode == REQUEST_CODE_PERMISSIONS) {
             if (allPermissionsGranted()) {
                 viewFinder.post { startCamera() }
             } else {
@@ -547,7 +564,7 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
                 ).show()
                 finish()
             }
-        }
+        }*/
     }
 
     //screen recording
@@ -647,7 +664,8 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
         Log.d(tag,"data value --"+data)
        /* var screenIntent:Intent = projectManager!!.createScreenCaptureIntent()
         startForegroundService(screenIntent)*/
-        mediaProjection = projectManager!!.getMediaProjection(resultCode, data!!)
+        mediaProjectionCallback = MediaProjectionCallback()
+        mediaProjection = projectManager?.getMediaProjection(resultCode, data!!) as MediaProjection
         mediaProjection!!.registerCallback(mediaProjectionCallback, null)
         virtualDisplay = createVirtualDisplay()
         mediaRecorder!!.start()
@@ -745,7 +763,7 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
         try {
             val camcorderProfile: CamcorderProfile =
                 CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH)
-            mediaRecorder!!.setAudioSource(MediaRecorder.AudioSource.MIC)   //MediaRecorder.AudioSource.VOICE_CALL
+            mediaRecorder!!.setAudioSource(MediaRecorder.AudioSource.CAMCORDER)   //MediaRecorder.AudioSource.VOICE_CALL
             mediaRecorder!!.setVideoSource(MediaRecorder.VideoSource.SURFACE)
             mediaRecorder!!.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)               //camcorderProfile.fileFormat
 
@@ -820,7 +838,7 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
     }
 
     //start camera
-     fun startCamera() {
+    /* fun startCamera() {
 
              doAsync {
 
@@ -886,7 +904,7 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
         // Finally, apply transformations to our TextureView
         viewFinder.setTransform(matrix)
     }
-
+*/
 
     public override fun dispatchKeyEvent(keyevent: KeyEvent): Boolean {
         var action: Int

@@ -3,6 +3,7 @@ package com.aradhana.immerpactnews
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -43,6 +44,7 @@ import org.jetbrains.anko.doAsync
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
+import java.security.Provider
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.Base64
@@ -918,19 +920,26 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
 
             KeyEvent.KEYCODE_VOLUME_DOWN -> {
                 if (KeyEvent.ACTION_DOWN == action) {
-                    mediaRecorder!!.stop()
-                    mediaRecorder!!.reset()
-                    stopScreenRecord()
+                    Log.d(tag, "mediaProjection$mediaProjection")
+                    if (mediaProjection == null) {
+                        Toast.makeText(applicationContext,"Press volume up button to start",Toast.LENGTH_LONG).show()
 
-                    //play vidio in vidio view
-                    vidio_view.visibility = View.VISIBLE
-                    vidio_view.setVideoURI(Uri.parse(vidioUri))
-                    vidio_view.start()
-                    Log.d(tag, "volumedown")
+                    } else {
+                        mediaRecorder!!.stop()
+
+                        mediaRecorder!!.reset()
+                        stopScreenRecord()
+
+                        //play vidio in vidio view
+                        vidio_view.visibility = View.VISIBLE
+                        vidio_view.setVideoURI(Uri.parse(vidioUri))
+                        vidio_view.start()
+                        Log.d(tag, "volumedown")
 
 
+                    }
+                    return true
                 }
-                return true
 
 
             }
